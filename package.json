@@ -14,7 +14,9 @@
   "author": "coderskm",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
-    "mongoose": "^8.18.1"
+    "mongoose": "^8.18.1",
+    "validator": "^10.10.0"
   }
 }
