@@ -44,7 +44,7 @@ authRouter.post("/login", async (req, res) => {
       const token = await userData.getJWT();
       // attaching token to cookie
       res.cookie("_devtinderuser", token, { expires: new Date(Date.now() + 168 * 3600000), httpOnly: true }); // will work on http protocol
-      res.status(200).send("user logged in");
+      res.status(200).send(userData);
     } else {
       throw new Error("invalid credentials");
     }
