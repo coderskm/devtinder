@@ -24,8 +24,12 @@ authRouter.post("/signup", async (req, res) => {
       age,
     });
     // saving into DB, returns promise
-    await user.save();
-    res.status(201).send("user saved successfully");
+    const savedUser = await user.save();
+    const token = await savedUser.getJWT();
+    // attaching token to cookie
+    res.cookie("_devtinderuser", token, { expires: new Date(Date.now() + 168 * 3600000), httpOnly: true }); // will work on http protocol
+
+    res.status(201).json({ message: "user saved successfully", data: savedUser });
   } catch (error) {
     res.status(400).send("ERROR : " + error.message);
   }
