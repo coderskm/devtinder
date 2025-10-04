@@ -1,22 +1,24 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/user");
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
+const userRouter = require("./routes/user");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const app = express();
+const app = express(); 
 
+const corsOptions = {
+  origin: "http://localhost:5173", // frontend URL
+  credentials: true,
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: "http://localhost:5173", // here frontend is hosted
-  credentials: true // credentials setup in backend
-}));
-
-
-const authRouter = require('./routes/auth');
-const profileRouter = require('./routes/profile');
-const requestRouter = require('./routes/request');
-const userRouter = require("./routes/user");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
@@ -57,28 +59,6 @@ app.delete("/user", async (req, res) => {
     res.status(200).send("user deleted successfully");
   } catch (error) {
     res.status(500).send("something went wrong");
-  }
-})
-
-app.patch("/user/:userId", async (req, res) => {
-  try {
-    const userId = req.params?.userId;
-    const data = req.body;
-    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"]
-    const isUpdateAllowed = Object.keys(data).every(k => ALLOWED_UPDATES.includes(k));
-    if (!isUpdateAllowed) {
-      throw new Error("Update Not Applied");
-    }
-    if (data?.skills.length > 10) {
-      throw new Error("You can Add Upto 10 Skills Only !!");
-    }
-    await User.findByIdAndUpdate({ _id: userId }, data, {
-      returnDocument: "after",
-      runValidators: true
-    });
-    res.status(200).send("user updated successfully");
-  } catch (error) {
-    res.status(500).send("something went wrong :- "+error.message);
   }
 })
 

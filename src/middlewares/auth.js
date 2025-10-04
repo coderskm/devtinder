@@ -7,7 +7,7 @@ try {
   const cookies = req.cookies;
     const { _devtinderuser } = cookies;
     if (!_devtinderuser) {
-        throw new Error("Token Not Valid !!");
+        return res.status(401).send("Please Login!")
     }
   // validate the token
   const decodedCookieObject = jwt.verify(_devtinderuser, "7cfe96f167e4e4b327fbf9f19485d0d9");
